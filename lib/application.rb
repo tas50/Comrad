@@ -16,12 +16,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# extend string with a marquee print function
+# extend string with methods for making fancy text
 class String
   def marquee
     puts "\n#{self}"
     length.times { printf '-' }
     puts "\n"
+  end
+
+  def to_green
+    "\033[32m#{self}\033[0m"
+  end
+
+  def to_red
+    "\033[31m#{self}\033[0m"
+  end
+
+  def indent(double_space_count = 1)
+    double_space_count.times { insert(0, '  ') }
+    self
   end
 end
 
@@ -45,7 +58,7 @@ module Comrad
         objects_updated = true unless @changes[object].empty?
       end
 
-      ('No objects to test. Exiting'.marquee && exit) unless objects_updated
+      ('No objects to test. Exiting'.to_green && exit) unless objects_updated
     end
 
     # check and see if the -p flag was passed and if so print the config hash
@@ -60,7 +73,7 @@ module Comrad
     # run tests on each changed cookbook
     def run
       # check_print_config
-      ( 'No objects updated by this commit.  Exiting'.marquee && exit ) if check_empty_update
+      ( 'No objects updated by this commit.  Exiting'.to_green && exit ) if check_empty_update
 
       # print objects that will be uploaded
       'The following chef objects will be changed'.marquee
