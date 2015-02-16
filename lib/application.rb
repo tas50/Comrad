@@ -16,9 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# extend class with a marque print function
+# extend string with a marquee print function
 class String
-  def marque
+  def marquee
     puts "\n#{self}"
     length.times { printf '-' }
     puts "\n"
@@ -45,13 +45,13 @@ module Comrad
         objects_updated = true unless @changes[object].empty?
       end
 
-      ('No objects to test. Exiting'.marque && exit) unless objects_updated
+      ('No objects to test. Exiting'.marquee && exit) unless objects_updated
     end
 
     # check and see if the -p flag was passed and if so print the config hash
     def check_print_config
       if @config['flags']['print_config']
-        'Current config file / CLI flag values'.marque
+        'Current config file / CLI flag values'.marquee
         @config_obj.print_config
         exit
       end
@@ -60,13 +60,13 @@ module Comrad
     # run tests on each changed cookbook
     def run
       # check_print_config
-      'No objects updated by this commit.  Exiting'.marque && exit if check_empty_update
+      ( 'No objects updated by this commit.  Exiting'.marquee && exit ) if check_empty_update
 
       # print objects that will be uploaded
-      'The following chef objects will be changed'.marque
+      'The following chef objects will be changed'.marquee
       puts @changes
 
-      'Making Chef Changes'.marque
+      'Making Chef Changes'.marquee
       Comrad::Chef.new(@config, @changes).run
     end
   end
