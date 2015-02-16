@@ -47,6 +47,14 @@ module Comrad
           flags[:config] = config
         end
 
+        opts.on('-d', '--dry-run', "Print what you would do, but don't actually do it") do |dryrun|
+          flags[:dryrun] = dryrun
+        end
+
+        opts.on('-s', '--scary-mode', "Enable the deletion of objects if they've been removed from git") do |scary|
+          flags[:scary] = scary
+        end
+
         opts.on('-h', '--help', 'Displays Help') do
           puts opts
           exit
