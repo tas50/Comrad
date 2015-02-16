@@ -1,7 +1,6 @@
 #!/bin/ruby
 
 begin
-  require 'rubygems'
   require 'json'
   require 'rest_client'
   require 'uri'

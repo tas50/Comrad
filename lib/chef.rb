@@ -17,7 +17,6 @@
 # limitations under the License.
 
 begin
-  require 'rubygems'
   require 'ridley'
 rescue LoadError => e
   raise "Missing gem or lib #{e}"
