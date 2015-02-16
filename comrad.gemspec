@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.date        = Date.today.to_s
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ['README.md', 'LICENSE']
-  s.summary     = 'Sync git changes directly to a Chef Server as a Jenkins job'
+  s.summary     = 'Your rad comrade - Sync changes from git to Chef Server via Jenkins'
   s.description = s.summary
   s.authors     = ['Tim Smith']
   s.email       = 'tim@cozy.co'
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'chef', '>= 11.0'
   s.add_dependency 'ridley', '~> 4.0'
   s.add_development_dependency 'rake', '~> 10.0'
-  s.add_development_dependency 'rubocop', '~> 0.28.0'
+  s.add_development_dependency 'rubocop', '~> 0.29.0'
 
   s.files         = `git ls-files -z`.split("\x0")
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
