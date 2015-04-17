@@ -49,26 +49,35 @@ module Comrad
       end
     end
 
+    # run the provided knife command
+    def excute_knife_cmd(cmd)
+      if @config['flags']['dryrun']
+       @slack.slack_put("    - I would be running #{cmd}")
+     else
+        @slack.slack_put('    - Non-dry mode is not implemented.  Doing nothing')
+      end
+    end
+
     # Perform actual actions on chef server and log to slack
     def take_actions
       @changes.each_pair do |type, name|
         next if name.empty?
         case
-        when type.to_s.match(/^['environments|roles']/)
+        when type.match(/^['environments|roles']/)
           name.each_pair do |item, action|
             @slack.slack_put(action_string(action, "#{item}"))
-            @slack.slack_put("   - #{build_knife_cmd(type, action, item)}")
+            excute_knife_cmd(build_knife_cmd(type, action, item))
           end
-        when type.to_s.match(/^['cookbooks']/)
+        when type == 'cookbooks'
           name.each_pair do |item, action|
             @slack.slack_put(action_string(action, "#{item}"))
-            @slack.slack_put("   - #{build_knife_cmd(type, action, item)}")
+            excute_knife_cmd(build_knife_cmd(type, action, item))
           end
-        when type.to_s.match(/^['data_bags']/)
+        when type == 'data_bags'
           name.each_pair do |bag, item|
             item.each_pair do |bag_item_name, action|
               @slack.slack_put(action_string(action, "#{bag}::#{bag_item_name} data bag item"))
-              @slack.slack_put("   - #{build_knife_cmd(type, action, bag, bag_item_name)}")
+              excute_knife_cmd(build_knife_cmd(type, action, bag, bag_item_name))
             end
           end
         end
