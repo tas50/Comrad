@@ -16,34 +16,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# extend string with methods for making fancy text
-class String
-  def marquee
-    puts "\n#{self}"
-    length.times { printf '-' }
-    puts "\n"
-  end
-
-  def to_green
-    "\033[32m#{self}\033[0m"
-  end
-
-  def to_red
-    "\033[31m#{self}\033[0m"
-  end
-
-  def indent(double_space_count = 1)
-    double_space_count.times { insert(0, '  ') }
-    self
-  end
-end
-
 module Comrad
   # the main class for the comrad app.  gets called by the comrad bin
   class Application
     require 'config'
     require 'change'
     require 'chef'
+    require 'string'
 
     def initialize
       @config_obj = Comrad::Config.new
@@ -73,7 +52,7 @@ module Comrad
     # run tests on each changed cookbook
     def run
       # check_print_config
-      ( 'No objects updated by this commit.  Exiting'.to_green && exit ) if check_empty_update
+      ('No objects updated by this commit.  Exiting'.to_green && exit) if check_empty_update
 
       # print objects that will be uploaded
       'The following chef objects will be changed'.marquee
