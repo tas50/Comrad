@@ -24,7 +24,13 @@ module Comrad
   # send notifications to slack
   class Slack
     def initialize(config)
+      @config = config
       @url = config['slack']['webhook_url']
+    end
+
+    def slack_put(text)
+      puts text
+      post(text) unless @config['flags']['quiet']
     end
 
     def post(text)

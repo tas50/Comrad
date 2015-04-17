@@ -35,7 +35,7 @@ module Comrad
 
     # grabs the flags passed in via command line
     def parse_flags
-      flags = { config: '/etc/comrad.yml', print_config: false }
+      flags = { config: '/etc/comrad.yml', print_config: false, quiet: false }
       OptionParser.new do |opts|
         opts.banner = 'Usage: comrad [options]'
 
@@ -45,6 +45,10 @@ module Comrad
 
         opts.on('-c', '--config comrad.yml', 'Path to config file (defaults to /etc/comrad.yml)') do |config|
           flags[:config] = config
+        end
+
+        opts.on('-q', '--quiet', "Don't post actions to Slack") do |config|
+          flags[:quiet] = config
         end
 
         opts.on('-d', '--dry-run', "Print what you would do, but don't actually do it") do |dryrun|
