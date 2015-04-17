@@ -45,14 +45,14 @@ module Comrad
     def check_print_config
       if @config['flags']['print_config']
         'Current config file / CLI flag values'.marquee
-        @config_obj.print_config
+        @config_obj.print
         exit
       end
     end
 
     # run tests on each changed cookbook
     def run
-      # check_print_config
+      check_print_config
       ('No objects updated by this commit.  Exiting'.to_green && exit) if check_empty_update
 
       # print objects that will be uploaded
