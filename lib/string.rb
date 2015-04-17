@@ -30,4 +30,10 @@ class String
     double_space_count.times { insert(0, '  ') }
     self
   end
+
+  def marquee
+    puts "\n#{self}"
+    length.times { printf '-' }
+    puts "\n"
+  end
 end
