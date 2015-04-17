@@ -35,7 +35,7 @@ module Comrad
 
     # grabs the flags passed in via command line
     def parse_flags
-      flags = { :config => '/etc/comrad.yml', :print_config => false }
+      flags = { config: '/etc/comrad.yml', print_config: false }
       OptionParser.new do |opts|
         opts.banner = 'Usage: comrad [options]'
 

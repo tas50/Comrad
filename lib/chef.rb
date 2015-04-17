@@ -42,8 +42,8 @@ module Comrad
         when type.to_s.match(/^['data_bags']/)
           name.each_pair do |bag, item|
             puts "In the data bag #{bag} I will:"
-            item.each_pair do |name, action|
-              puts "  - #{action} #{name}"
+            item.each_pair do |bag_name, action|
+              puts "  - #{action} #{bag_name}"
             end
           end
         end
