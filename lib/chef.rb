@@ -36,10 +36,8 @@ module Comrad
       string + trailing_text
     end
 
-    # interfact with the chef server
-    def run
-      @slack.slack_put("Comrad action for chef repo build # #{ENV['BUILD_NUM'] || 5}:")
-
+    # Perform actual actions on chef server and log to slack
+    def take_actions
       @changes.each_pair do |type, name|
         next if name.empty?
         case
@@ -60,5 +58,11 @@ module Comrad
         end
       end
     end
-  end
-end
+
+    # called by application to perform actions
+    def run
+      @slack.slack_put("Comrad action for chef repo build # #{ENV['BUILD_NUM'] || 5}:")
+      take_actions
+    end
+  end # Chef class
+end # Comrad Module
