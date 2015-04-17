@@ -74,7 +74,7 @@ module Comrad
 
     # return an action based on the status of the object in the workspace
     def action(file)
-      ::File.exist?(::File.join(@jenkins_workspace_path, file)) ? 'update' : 'remove'
+      ::File.exist?(::File.join(@jenkins_workspace_path, file)) ? 'update' : 'delete'
     end
 
     def print

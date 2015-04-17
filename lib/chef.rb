@@ -32,8 +32,21 @@ module Comrad
     end
 
     def action_string(action, trailing_text)
-      string = @config['flags']['dryrun'] ? "- I would #{action} " : "- #{action.capitalize.chomp('e')}ing "
+      string = @config['flags']['dryrun'] ? " - I would #{action} " : " - #{action.capitalize.chomp('e')}ing "
       string + trailing_text
+    end
+
+    # a really horrible method to build knife commands based on item / action / item type (cookbook/role/environment/data_bag)
+    def build_knife_cmd(type, action, item1, item2 = nil)
+      if type == 'data_bags'
+        action == 'delete' ? "knife data bag delete #{item1} #{item2}" : "knife data bag from file #{item1} data_bags/#{item1}/#{item2}"
+      elsif action == 'delete'
+        "knife #{type.chomp('s')} delete #{item1} #{item2}"
+      elsif type == 'cookbooks'
+        "knife cookbook #{action == 'update' ? 'upload' : 'delete'} #{item1}"
+      else
+        "knife #{type.chomp('s')} from file #{type}s/#{item1}"
+      end
     end
 
     # Perform actual actions on chef server and log to slack
@@ -44,15 +57,18 @@ module Comrad
         when type.to_s.match(/^['environments|roles']/)
           name.each_pair do |item, action|
             @slack.slack_put(action_string(action, "#{item}"))
+            @slack.slack_put("   - #{build_knife_cmd(type, action, item)}")
           end
         when type.to_s.match(/^['cookbooks']/)
           name.each_pair do |item, action|
             @slack.slack_put(action_string(action, "#{item}"))
+            @slack.slack_put("   - #{build_knife_cmd(type, action, item)}")
           end
         when type.to_s.match(/^['data_bags']/)
           name.each_pair do |bag, item|
             item.each_pair do |bag_item_name, action|
               @slack.slack_put(action_string(action, "#{bag}::#{bag_item_name} data bag item"))
+              @slack.slack_put("   - #{build_knife_cmd(type, action, bag, bag_item_name)}")
             end
           end
         end
