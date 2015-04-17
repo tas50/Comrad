@@ -23,6 +23,7 @@ module Comrad
     require 'change'
     require 'chef'
     require 'string'
+    require 'slack'
 
     def initialize
       @config_obj = Comrad::Config.new

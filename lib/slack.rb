@@ -27,7 +27,7 @@ module Comrad
       @url = config['slack']['webhook_url']
     end
 
-    def self.post(text)
+    def post(text)
       RestClient.post @url, create_message(text).to_json
     end
 

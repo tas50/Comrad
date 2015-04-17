@@ -28,6 +28,12 @@ module Comrad
     def initialize(config, changes)
       @config = config
       @changes = changes
+      @slack = Comrad::Slack.new(config)
+    end
+
+    def slack_put(text)
+      puts text
+      @slack.post(text)
     end
 
     # interfact with the chef server
@@ -37,13 +43,13 @@ module Comrad
         case
         when type.to_s.match(/^['environments|roles|cookbooks']/)
           name.each_pair do |item, action|
-            puts "I'm going to #{action} #{item}"
+            slack_put("I'm going to #{action} #{item}")
           end
         when type.to_s.match(/^['data_bags']/)
           name.each_pair do |bag, item|
-            puts "In the data bag #{bag} I will:"
+            slack_put("In the data bag #{bag} I will:")
             item.each_pair do |bag_name, action|
-              puts "  - #{action} #{bag_name}"
+              slack_put("  - #{action} #{bag_name}")
             end
           end
         end
