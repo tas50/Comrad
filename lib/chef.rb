@@ -31,6 +31,11 @@ module Comrad
       @slack = Comrad::Slack.new(config)
     end
 
+    def action_string(action, trailing_text)
+      string = @config['flags']['dryrun'] ? "- I would #{action} " : "- #{action.capitalize.chomp('e')}ing "
+      string + trailing_text
+    end
+
     # interfact with the chef server
     def run
       @slack.slack_put("Comrad action for chef repo build # #{ENV['BUILD_NUM'] || 5}:")
@@ -40,17 +45,16 @@ module Comrad
         case
         when type.to_s.match(/^['environments|roles']/)
           name.each_pair do |item, action|
-            @slack.slack_put("I would #{action} #{item}")
+            @slack.slack_put(action_string(action, "#{item}"))
           end
         when type.to_s.match(/^['cookbooks']/)
           name.each_pair do |item, action|
-            @slack.slack_put("I would #{action} #{item}")
+            @slack.slack_put(action_string(action, "#{item}"))
           end
         when type.to_s.match(/^['data_bags']/)
           name.each_pair do |bag, item|
-            @slack.slack_put("In the data bag #{bag} I would:")
-            item.each_pair do |bag_name, action|
-              @slack.slack_put("  - #{action} #{bag_name}")
+            item.each_pair do |bag_item_name, action|
+              @slack.slack_put(action_string(action, "#{bag}::#{bag_item_name} data bag item"))
             end
           end
         end
