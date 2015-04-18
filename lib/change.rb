@@ -38,7 +38,7 @@ module Comrad
       @password = @config['jenkins']['password']
       @job_name = @config['jenkins']['job_name']
       @jenkins_workspace_path = @config['jenkins']['workspace_dir']
-      @build_num = ENV['BUILD_NUM']
+      @build_num = ENV['BUILD_NUMBER']
 
       @build_data = query_build_data
       @changes = create_change_hash(changed_files_array)
