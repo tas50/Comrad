@@ -86,7 +86,7 @@ module Comrad
 
     # called by application to perform actions
     def run
-      @slack.slack_put("Comrad action for chef repo build # #{ENV['BUILD_NUM'] || 5}:")
+      @slack.slack_put("Comrad action for chef repo build # #{ENV['BUILD_NUM']}:")
       take_actions
     end
   end # Chef class
