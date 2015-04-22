@@ -52,8 +52,8 @@ module Comrad
     # run the provided knife command
     def excute_knife_cmd(cmd)
       if @config['flags']['dryrun']
-       @slack.slack_put("    - I would be running #{cmd}")
-     else
+        @slack.slack_put("    - I would be running #{cmd}")
+      else
         @slack.slack_put('    - Non-dry mode is not implemented.  Doing nothing')
       end
     end
