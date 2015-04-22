@@ -31,6 +31,7 @@ module Comrad
       @slack = Comrad::Slack.new(config)
     end
 
+    # builds a string of what the action is / would be depending on dry run or not
     def action_string(action, trailing_text)
       string = @config['flags']['dryrun'] ? " - I would #{action} " : " - #{action.capitalize.chomp('e')}ing "
       string + trailing_text
@@ -58,7 +59,7 @@ module Comrad
       end
     end
 
-    # Perform actual actions on chef server and log to slack
+    # main method of the class.  Iterates over the changes passed in and kicks off actions / slack messaging
     def take_actions
       @changes.each_pair do |type, name|
         next if name.empty?
