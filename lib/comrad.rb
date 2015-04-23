@@ -23,7 +23,7 @@ module Comrad
   require 'comrad/config'
   require 'comrad/change'
   require 'comrad/chef'
-  require 'comrad/slack'
+  require 'comrad/notifier'
 
   TESTED_OBJECT_TYPES = %w(cookbooks roles environments data_bags)
 
@@ -44,6 +44,8 @@ module Comrad
 
     'Making Chef Changes'.marquee
     Comrad::Chef.new(Config.config, changes).run
+
+    Notifier.notify(changes)
   end
 
   #######

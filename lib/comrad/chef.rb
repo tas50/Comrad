@@ -16,19 +16,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-begin
-  require 'ridley'
-rescue LoadError => e
-  raise "Missing gem or lib #{e}"
-end
-
 module Comrad
   # uploads / removes objects that changed from the chef server
   class Chef
     def initialize(config, changes)
       @config = config
       @changes = changes
-      @slack = Comrad::Slack.new(config)
     end
 
     # builds a string of what the action is / would be depending on dry run or not
@@ -53,9 +46,9 @@ module Comrad
     # run the provided knife command
     def excute_knife_cmd(cmd)
       if @config['flags']['dryrun']
-        @slack.slack_put("    - I would be running #{cmd}")
+        puts "I would be running '#{cmd}'"
       else
-        @slack.slack_put('    - Non-dry mode is not implemented.  Doing nothing')
+        puts "Live mode is not implemented. Not performing '#{cmd}'"
       end
     end
 
@@ -66,18 +59,15 @@ module Comrad
         case
         when type.match(/^['environments|roles']/)
           name.each_pair do |item, action|
-            @slack.slack_put(action_string(action, "#{item}"))
             excute_knife_cmd(build_knife_cmd(type, action, item))
           end
         when type == 'cookbooks'
           name.each_pair do |item, action|
-            @slack.slack_put(action_string(action, "#{item}"))
             excute_knife_cmd(build_knife_cmd(type, action, item))
           end
         when type == 'data_bags'
           name.each_pair do |bag, item|
             item.each_pair do |bag_item_name, action|
-              @slack.slack_put(action_string(action, "#{bag}::#{bag_item_name} data bag item"))
               excute_knife_cmd(build_knife_cmd(type, action, bag, bag_item_name))
             end
           end
@@ -87,7 +77,6 @@ module Comrad
 
     # called by application to perform actions
     def run
-      @slack.slack_put("Comrad action for chef repo build # #{ENV['BUILD_NUMBER']}:")
       take_actions
     end
   end # Chef class
