@@ -28,7 +28,7 @@ module Comrad
   # interacts with jenkins API to determine changes files
   # parses changed files to determine relevant files that will
   # need to be uploaded to chef server
-  class Change < Application
+  class Change
     attr_accessor :changes
     def initialize(config)
       @config = config

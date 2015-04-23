@@ -24,7 +24,7 @@ end
 
 module Comrad
   # uploads / removes objects that changed from the chef server
-  class Chef < Application
+  class Chef
     def initialize(config, changes)
       @config = config
       @changes = changes
