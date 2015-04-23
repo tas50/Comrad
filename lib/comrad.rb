@@ -34,7 +34,7 @@ module Comrad
   def self::run
     self.check_print_config
 
-    changes = Comrad::Change.new(Comrad::Config.settings).changes
+    changes = Comrad::Change.new(Config.config).changes
     ('No objects updated by this commit.  Exiting'.to_green && exit) if check_empty_update(changes)
 
     # print objects that will be uploaded
@@ -42,7 +42,7 @@ module Comrad
     puts changes
 
     'Making Chef Changes'.marquee
-    Comrad::Chef.new(Comrad::Config.settings, changes).run
+    Comrad::Chef.new(Config.config, changes).run
   end
 
   #######
@@ -61,9 +61,9 @@ module Comrad
 
   # check and see if the -p flag was passed and if so print the config hash
   def self::check_print_config
-    if Comrad::Config.settings['flags']['print_config']
+    if Config.config['flags']['print_config']
       'Current config file / CLI flag values'.marquee
-      Comrad::Config.settings.print
+      Config.print
       exit
     end
   end

@@ -24,13 +24,13 @@ module Comrad
   class Config
 
     # return the fully-evaluated configuration hash
-    def self::settings
+    def self::config
       @flags ||= self.parse_flags
-      @settings ||= self.merge_configs(self.load_file(@flags[:config]), @flags)
+      @config ||= self.merge_configs(self.load_file(@flags[:config]), @flags)
     end
 
     # pretty print the config hash
-    def self::print(hash=self.settings, spaces=0)
+    def self::print(hash=self.config, spaces=0)
       hash.each do |k, v|
         spaces.times { print ' ' }
         print k.to_s + ': '
