@@ -1,4 +1,4 @@
-# encoding: UTF-8
+ # encoding: UTF-8
 #
 # Author:: Tim Smith (<tim@cozy.co>)
 # Copyright:: Copyright (c) 2014-2015 Tim Smith
@@ -18,7 +18,8 @@
 
 module Comrad
 
-  require 'core/ext/string'
+  require 'core_ext/string'
+
   require 'comrad/config'
   require 'comrad/change'
   require 'comrad/chef'
