@@ -1,4 +1,4 @@
- # encoding: UTF-8
+# encoding: UTF-8
 #
 # Author:: Tim Smith (<tim@cozy.co>)
 # Copyright:: Copyright (c) 2014-2015 Tim Smith
@@ -16,10 +16,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Your rad comrade - Sync changes from git to Chef Server via Jenkins
 module Comrad
-
   require 'core_ext/string'
-
   require 'comrad/config'
   require 'comrad/change'
   require 'comrad/chef'
@@ -27,13 +26,11 @@ module Comrad
 
   TESTED_OBJECT_TYPES = %w(cookbooks roles environments data_bags)
 
-  ###############
   module_function
-  ###############
 
   # run tests on each changed cookbook
   def self::run
-    self.check_print_config
+    check_print_config
 
     changes = Comrad::Change.new(Config.config).changes
     ('No objects updated by this commit.  Exiting'.to_green && exit) if check_empty_update(changes)
@@ -48,9 +45,7 @@ module Comrad
     Notifier.notify(changes)
   end
 
-  #######
   private
-  #######
 
   # exit with a friendly message if nothing we test has been changed
   def self::check_empty_update(changes)

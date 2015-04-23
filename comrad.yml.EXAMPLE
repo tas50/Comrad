@@ -1,5 +1,6 @@
 slack:
   webhook_url: 1234abcde1234abcde
+  channel: '#general'
 jenkins:
   workspace_dir: '/home/jenkins/workspace/chef-repo/'
 chef:

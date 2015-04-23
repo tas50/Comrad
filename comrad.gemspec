@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop', '~> 0.30.0'
 
   s.files         = `git ls-files -z`.split("\x0")
-  s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  s.executables   = s.files.grep(/^bin\//) { |f| File.basename(f) }
   s.require_paths = ['lib']
   s.extra_rdoc_files = ['README.md']
   s.rdoc_options = ['--line-numbers', '--inline-source', '--title', 'reagan', '--main', 'README.md']

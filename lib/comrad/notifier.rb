@@ -18,21 +18,16 @@
 
 require 'slack/post'
 
-# base module
 module Comrad
   # send notifications to slack
   class Notifier
-
     def self::notify(changeset)
       unless Config.config['flags']['quiet']
-        self.configure unless @configured
-        Slack::Post.post_with_attachments "Comrad action for chef repo build # #{ENV['BUILD_NUMBER']}", 
-          self.format_attachment(changeset)
+        configure unless @configured
+        Slack::Post.post_with_attachments "Comrad action for chef repo build # #{ENV['BUILD_NUMBER']}",
+          format_attachment(changeset)
       end
-
     end
-
-    private
 
     def self::configure
       Slack::Post.configure(
@@ -41,12 +36,12 @@ module Comrad
         channel: Config.config['slack']['channel']
       )
       @configured = true
-    end 
+    end
 
     def self::format_attachment(changeset)
       attach = {
-        fallback: "",
-        color: "#36a64f",
+        fallback: '',
+        color: '#36a64f',
         fields: []
       }
 
@@ -54,12 +49,12 @@ module Comrad
         next if name.empty?
         case
         when type.match(/^['environments|roles|cookbooks']/)
-          v = ""
+          v = ''
           name.each_pair do |item, action|
             v << "#{action} #{item}\n"
           end
         when type == 'data_bags'
-          v = ""
+          v = ''
           name.each_pair do |bag, item|
             item.each_pair do |bag_item_name, action|
               v << "#{action} #{bag} #{bag_item_name}\n"
@@ -73,6 +68,5 @@ module Comrad
 
       [attach]
     end
-
   end
 end
