@@ -33,8 +33,18 @@ module Comrad
       @settings = merge_configs
     end
 
+    # make sure the BUILD_NUMBER Jenkins variable exists.  If not force help
+    def check_jenkins_env_variable
+      if ENV['BUILD_NUMBER'].nil?
+        puts "Jenkins set BUILD_NUMBER environmental variable not set. Cannot continue.\n\n"
+        ARGV[0] = '-h'
+      end
+    end
+
     # grabs the flags passed in via command line
     def parse_flags
+      check_jenkins_env_variable
+
       flags = { config: '/etc/comrad.yml', print_config: false, quiet: false }
       OptionParser.new do |opts|
         opts.banner = 'Usage: comrad [options]'
