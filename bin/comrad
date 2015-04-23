@@ -20,6 +20,6 @@
 # load the libs
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 
-require 'application'
+require 'comrad'
 
-Comrad::Application.new.run
+Comrad.run

@@ -24,41 +24,47 @@ module Comrad
   require 'comrad/chef'
   require 'comrad/slack'
 
-  def initialize
-    @config_obj = Comrad::Config.new
-    @config = @config_obj.settings
-    @changes = Comrad::Change.new(@config).changes
+  TESTED_OBJECT_TYPES = %w(cookbooks roles environments data_bags)
+
+  ###############
+  module_function
+  ###############
+
+  # run tests on each changed cookbook
+  def self::run
+    self.check_print_config
+
+    changes = Comrad::Change.new(Comrad::Config.settings).changes
+    ('No objects updated by this commit.  Exiting'.to_green && exit) if check_empty_update(changes)
+
+    # print objects that will be uploaded
+    'The following chef objects will be changed'.marquee
+    puts changes
+
+    'Making Chef Changes'.marquee
+    Comrad::Chef.new(Comrad::Config.settings, changes).run
   end
 
+  #######
+  private
+  #######
+
   # exit with a friendly message if nothing we test has been changed
-  def check_empty_update
+  def self::check_empty_update(changes)
     objects_updated = false
-    %w(cookbooks roles environments data_bags).each do |object|
-      objects_updated = true unless @changes[object].empty?
+    TESTED_OBJECT_TYPES.each do |object|
+      objects_updated = true unless changes[object].empty?
     end
 
     ('No objects to test. Exiting'.to_green && exit) unless objects_updated
   end
 
   # check and see if the -p flag was passed and if so print the config hash
-  def check_print_config
-    if @config['flags']['print_config']
+  def self::check_print_config
+    if Comrad::Config.settings['flags']['print_config']
       'Current config file / CLI flag values'.marquee
-      @config_obj.print
+      Comrad::Config.settings.print
       exit
     end
-  end
-
-  # run tests on each changed cookbook
-  def run
-    check_print_config
-    ('No objects updated by this commit.  Exiting'.to_green && exit) if check_empty_update
-
-    # print objects that will be uploaded
-    'The following chef objects will be changed'.marquee
-    puts @changes
-
-    'Making Chef Changes'.marquee
-    Comrad::Chef.new(@config, @changes).run
   end
 end
