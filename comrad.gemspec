@@ -14,7 +14,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.9.3'
   s.add_dependency 'rest-client', '~> 1.7.0'
   s.add_dependency 'chef', '>= 11.0'
-  s.add_dependency 'ridley', '~> 4.0'
   s.add_development_dependency 'rake', '~> 10.0'
   s.add_development_dependency 'rubocop', '~> 0.30.0'
 

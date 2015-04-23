@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'chef', '>= 11.0'
-gem 'ridley', '~> 4.1'
 gem 'rest-client', '~> 1.7.0'
 
 group :test do
