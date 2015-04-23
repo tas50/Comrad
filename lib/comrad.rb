@@ -20,11 +20,9 @@
 module Comrad
   require 'core_ext/string'
   require 'comrad/config'
-  require 'comrad/change'
+  require 'comrad/changeset'
   require 'comrad/chef'
   require 'comrad/notifier'
-
-  TESTED_OBJECT_TYPES = %w(cookbooks roles environments data_bags)
 
   module_function
 
@@ -32,30 +30,19 @@ module Comrad
   def self::run
     check_print_config
 
-    changes = Comrad::Change.new(Config.config).changes
-    ('No objects updated by this commit.  Exiting'.to_green && exit) if check_empty_update(changes)
+    ('No objects to test. Exiting'.to_green && exit) if Changeset.empty?
 
     # print objects that will be uploaded
     'The following chef objects will be changed'.marquee
-    puts changes
+    puts Changeset.changes
 
     'Making Chef Changes'.marquee
-    Comrad::Chef.new(Config.config, changes).run
+    Comrad::Chef.new(Config.config, Changeset.changes).run
 
-    Notifier.notify(changes)
+    Notifier.notify(Changeset.changes)
   end
 
   private
-
-  # exit with a friendly message if nothing we test has been changed
-  def self::check_empty_update(changes)
-    objects_updated = false
-    TESTED_OBJECT_TYPES.each do |object|
-      objects_updated = true unless changes[object].empty?
-    end
-
-    ('No objects to test. Exiting'.to_green && exit) unless objects_updated
-  end
 
   # check and see if the -p flag was passed and if so print the config hash
   def self::check_print_config
