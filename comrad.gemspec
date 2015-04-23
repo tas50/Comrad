@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'comrad'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.date        = Date.today.to_s
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ['README.md', 'LICENSE']
