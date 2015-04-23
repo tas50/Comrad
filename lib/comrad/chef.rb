@@ -19,19 +19,14 @@
 module Comrad
   # uploads / removes objects that changed from the chef server
   class Chef
-    def initialize(config, changes)
-      @config = config
-      @changes = changes
-    end
-
     # builds a string of what the action is / would be depending on dry run or not
-    def action_string(action, trailing_text)
-      string = @config['flags']['dryrun'] ? " - I would #{action} " : " - #{action.capitalize.chomp('e')}ing "
+    def self::action_string(action, trailing_text)
+      string = Config.config['flags']['dryrun'] ? " - I would #{action} " : " - #{action.capitalize.chomp('e')}ing "
       string + trailing_text
     end
 
     # a really horrible method to build knife commands based on item / action / item type (cookbook/role/environment/data_bag)
-    def build_knife_cmd(type, action, item1, item2 = nil)
+    def self::build_knife_cmd(type, action, item1, item2 = nil)
       if type == 'data_bags'
         action == 'delete' ? "knife data bag delete #{item1} #{item2}" : "knife data bag from file #{item1} data_bags/#{item1}/#{item2}"
       elsif action == 'delete'
@@ -44,17 +39,17 @@ module Comrad
     end
 
     # run the provided knife command
-    def excute_knife_cmd(cmd)
-      if @config['flags']['dryrun']
+    def self::excute_knife_cmd(cmd)
+      if Config.config['flags']['dryrun']
         puts "I would be running '#{cmd}'"
       else
         puts "Live mode is not implemented. Not performing '#{cmd}'"
       end
     end
 
-    # main method of the class.  Iterates over the changes passed in and kicks off actions / slack messaging
-    def take_actions
-      @changes.each_pair do |type, name|
+    # perform the appropriate knife action for each item in the +changeset+
+    def self::process_changes(changeset)
+      changeset.each_pair do |type, name|
         next if name.empty?
         case
         when type.match(/^['environments|roles']/)
@@ -73,11 +68,6 @@ module Comrad
           end
         end
       end
-    end
-
-    # called by application to perform actions
-    def run
-      take_actions
     end
   end # Chef class
 end # Comrad Module

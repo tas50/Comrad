@@ -15,10 +15,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+require 'core_ext/string'
+require 'pp'
 
 # Your rad comrade - Sync changes from git to Chef Server via Jenkins
 module Comrad
-  require 'core_ext/string'
   require 'comrad/config'
   require 'comrad/changeset'
   require 'comrad/chef'
@@ -28,28 +29,23 @@ module Comrad
 
   # run tests on each changed cookbook
   def self::run
-    check_print_config
-
-    ('No objects to test. Exiting'.to_green && exit) if Changeset.empty?
-
-    # print objects that will be uploaded
-    'The following chef objects will be changed'.marquee
-    puts Changeset.changes
-
-    'Making Chef Changes'.marquee
-    Comrad::Chef.new(Config.config, Changeset.changes).run
-
-    Notifier.notify(Changeset.changes)
-  end
-
-  private
-
-  # check and see if the -p flag was passed and if so print the config hash
-  def self::check_print_config
     if Config.config['flags']['print_config']
       'Current config file / CLI flag values'.marquee
       Config.print
       exit
     end
+
+    if Changeset.empty?
+      'No objects to test. Exiting'.to_green
+      exit
+    end
+
+    'The following chef objects will be changed'.marquee
+    pp Changeset.changes
+
+    'Making Chef Changes'.marquee
+    Chef.process_changes(Changeset.changes)
+
+    Notifier.notify(Changeset.changes)
   end
 end
