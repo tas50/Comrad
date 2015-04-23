@@ -46,7 +46,7 @@ module Comrad
       elsif type == 'cookbooks'
         "knife cookbook #{action == 'update' ? 'upload' : 'delete'} #{item1}"
       else
-        "knife #{type.chomp('s')} from file #{type}s/#{item1}"
+        "knife #{type.chomp('s')} from file #{type}/#{item1}"
       end
     end
 
