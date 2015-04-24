@@ -24,8 +24,7 @@ module Comrad
     def self::notify(changeset)
       unless Config.config['flags']['quiet']
         configure unless @configured
-        Slack::Post.post_with_attachments "Comrad action for chef repo build # #{ENV['BUILD_NUMBER']}",
-          format_attachment(changeset)
+        Slack::Post.post_with_attachments(title, format_attachment(changeset))
       end
     end
 
@@ -38,6 +37,10 @@ module Comrad
       @configured = true
     end
 
+    def self::title
+      "Comrad action for chef repo <#{Changeset.build_data['url']}|Build ##{Changeset.build_data['number']}>"
+    end
+
     def self::format_attachment(changeset)
       attach = {
         fallback: '',
@@ -45,25 +48,14 @@ module Comrad
         fields: []
       }
 
-      changeset.each_pair do |type, name|
-        next if name.empty?
-        case
-        when type.match(/^['environments|roles|cookbooks']/)
-          v = ''
-          name.each_pair do |item, action|
-            v << "#{action} #{item}\n"
-          end
-        when type == 'data_bags'
-          v = ''
-          name.each_pair do |bag, item|
-            item.each_pair do |bag_item_name, action|
-              v << "#{action} #{bag} #{bag_item_name}\n"
-            end
-          end
+      changeset.each_pair do |item_class, action_pairs|
+        next if action_pairs.empty?
+        text = ''
+        action_pairs.each_pair do |item, action|
+          text << "#{action} #{item}\n"
         end
-
-        attach[:fallback] << "#{type}:\n#{v}"
-        attach[:fields] << { title: type, value: v, short: false }
+        attach[:fallback] << "#{item_class}:\n#{text}"
+        attach[:fields] << { title: item_class, value: text, short: false }
       end
 
       [attach]
