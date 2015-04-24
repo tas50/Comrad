@@ -15,19 +15,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require 'core_ext/string'
 require 'pp'
+
+require 'core_ext/string'
+
+require 'comrad/config'
+require 'comrad/changeset'
+require 'comrad/chef'
+require 'comrad/notifier'
 
 # Your rad comrade - Sync changes from git to Chef Server via Jenkins
 module Comrad
-  require 'comrad/config'
-  require 'comrad/changeset'
-  require 'comrad/chef'
-  require 'comrad/notifier'
-
   module_function
 
-  # run tests on each changed cookbook
+  # Evaluate the current build for chef object changes,
+  # use knife to upload changed objects to the Chef server,
+  # send a notification to slack.
   def self::run
     if Config.config['flags']['print_config']
       'Current config file / CLI flag values'.marquee

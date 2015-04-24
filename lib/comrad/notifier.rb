@@ -30,23 +30,21 @@ module Comrad
       @configured = true
     end
 
+    # Post a Slack notification containing details of the changes
     def self::notify_changes
       unless Config.config['flags']['quiet']
         configure unless @configured
         Slack::Post.post_with_attachments(
-          "Comrad action for chef repo <%s|Build #%s>" % [
+          'Comrad action for chef repo <%s|Build #%s>' % [ # rubocop:disable FormatString
             Changeset.build_data['url'],
             Changeset.build_data['number']],
           changeset_attachment)
       end
     end
 
+    # Generate a Slack message attachment that contains changeset details
     def self::changeset_attachment
-      attach = {
-        fallback: '',
-        color: '#36a64f',
-        fields: []
-      }
+      attach = { fallback: '', color: '#36a64f', fields: [] }
 
       Changeset.changes.each_pair do |item_class, action_pairs|
         next if action_pairs.empty?

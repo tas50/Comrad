@@ -19,30 +19,27 @@
 module Comrad
   # uploads / removes objects that changed from the chef server
   class Chef
-    # builds a string of what the action is / would be depending on dry run or not
-    def self::action_string(action, trailing_text)
-      string = Config.config['flags']['dryrun'] ? " - I would #{action} " : " - #{action.capitalize.chomp('e')}ing "
-      string + trailing_text
-    end
-
+    # Given an +item+ of +item_class+, return a knife command that performs +action+
     def self::knife_command(item_class, item, action)
-      item_class_singular = item_class.chomp('s')  # eg cookbooks > cookbook
-
       item_path = {
         cookbooks: item,
         data_bags: "data_bags/#{item}",
         environments: "environments/#{item}",
         roles: "roles/#{item}"
       }
-      item_path[:data_bags] = item.split('/').join(' ') if action == 'delete' # special case
+      # Special case: if we're deleting a data_bag, we want
+      # "bag_name item_name" without the '.json' rather than the path to the item.
+      item_path[:data_bags] = item.split('/').join(' ').chomp('.json') if action == 'delete'
 
-      knife_action = {
-        delete: 'delete',
-        update: 'from file'
-      }
-      knife_action[:update] = 'upload' if item_class == 'cookbooks' # special case
+      knife_action = { delete: 'delete', update: 'from file' }
+      # Special case: we call 'upload' instead of 'from file' for updated cookbooks
+      knife_action[:update] = 'upload' if item_class == 'cookbooks'
 
-      "knife #{item_class_singular} #{knife_action[action.to_sym]} #{item_path[item_class.to_sym]}"
+      'knife %s %s %s' % [ # rubocop:disable FormatString
+        item_class.chomp('s'), # cookbook, data_bag, environment, role
+        knife_action[action.to_sym], # 'upload', 'delete' or 'from file'
+        item_path[item_class.to_sym] # cookbookname, environments/foo.json, 'dbag bagitem', etc.
+      ]
     end
 
     # run the provided knife command

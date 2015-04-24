@@ -24,14 +24,17 @@ module Comrad
   # parses changed files to determine relevant files that will
   # need to be uploaded to chef server
   class Changeset
+    # Return a hash of all changed objects
     def self::changes
       @changes ||= create_change_hash(changed_files_array)
     end
 
+    # True if there are no changed objects
     def self::empty?
       changes == empty_chef_object_hash
     end
 
+    # Return a hash of all Jenkins details for this build
     def self::build_data
       @build_data ||= fetch_build_data
     end
