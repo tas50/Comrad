@@ -22,15 +22,14 @@ require 'optparse'
 module Comrad
   # builds a single config from passed flags, yaml config, and knife.rb
   class Config
-
     # return the fully-evaluated configuration hash
     def self::config
-      @flags ||= self.parse_flags
-      @config ||= self.merge_configs(self.load_file(@flags[:config]), @flags)
+      @flags ||= parse_flags
+      @config ||= merge_configs(load_file(@flags[:config]), @flags)
     end
 
     # pretty print the config hash
-    def self::print(hash=self.config, spaces=0)
+    def self::print(hash = config, spaces = 0)
       hash.each do |k, v|
         spaces.times { print ' ' }
         print k.to_s + ': '
@@ -43,10 +42,6 @@ module Comrad
       end
     end
 
-    #######
-    private
-    #######
-
     # make sure the BUILD_NUMBER Jenkins variable exists.  If not force help
     def self::check_jenkins_env_variable
       if ENV['BUILD_NUMBER'].nil?
@@ -57,7 +52,7 @@ module Comrad
 
     # grabs the flags passed in via command line
     def self::parse_flags
-      self.check_jenkins_env_variable
+      check_jenkins_env_variable
 
       flags = { config: '/etc/comrad.yml', print_config: false, quiet: false }
       OptionParser.new do |opts|
@@ -115,6 +110,5 @@ module Comrad
       flags_config.each { |k, v| config['flags'][k.to_s] = v }
       config
     end
-
   end
 end
