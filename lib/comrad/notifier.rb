@@ -22,6 +22,7 @@ module Comrad
   # send notifications to slack
   class Notifier
     def self::configure
+      validate_config
       Slack::Post.configure(
         webhook_url: Config.config['slack']['webhook_url'],
         username: 'comrad',
@@ -57,6 +58,14 @@ module Comrad
       end
 
       [attach]
+    end
+
+    # Ensure the slack config is present
+    def self::validate_config
+      unless Config.config['slack']['webhook_url'] && Config.config['slack']['channel']
+        puts "\nSlack config in comrad.yml is incomplete. Cannot continue.".to_red
+        exit!
+      end
     end
   end
 end
