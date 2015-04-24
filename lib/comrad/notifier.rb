@@ -21,13 +21,6 @@ require 'slack/post'
 module Comrad
   # send notifications to slack
   class Notifier
-    def self::notify(changeset)
-      unless Config.config['flags']['quiet']
-        configure unless @configured
-        Slack::Post.post_with_attachments(title, format_attachment(changeset))
-      end
-    end
-
     def self::configure
       Slack::Post.configure(
         webhook_url: Config.config['slack']['webhook_url'],
@@ -37,18 +30,25 @@ module Comrad
       @configured = true
     end
 
-    def self::title
-      "Comrad action for chef repo <#{Changeset.build_data['url']}|Build ##{Changeset.build_data['number']}>"
+    def self::notify_changes
+      unless Config.config['flags']['quiet']
+        configure unless @configured
+        Slack::Post.post_with_attachments(
+          "Comrad action for chef repo <%s|Build #%s>" % [
+            Changeset.build_data['url'],
+            Changeset.build_data['number']],
+          changeset_attachment)
+      end
     end
 
-    def self::format_attachment(changeset)
+    def self::changeset_attachment
       attach = {
         fallback: '',
         color: '#36a64f',
         fields: []
       }
 
-      changeset.each_pair do |item_class, action_pairs|
+      Changeset.changes.each_pair do |item_class, action_pairs|
         next if action_pairs.empty?
         text = ''
         action_pairs.each_pair do |item, action|

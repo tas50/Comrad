@@ -55,8 +55,8 @@ module Comrad
     end
 
     # perform the appropriate knife action for each item in the +changeset+
-    def self::process_changes(changeset)
-      changeset.each_pair do |item_class, action_pairs|
+    def self::process_changes
+      Changeset.changes.each_pair do |item_class, action_pairs|
         next if action_pairs.empty?
         action_pairs.each_pair do |item, action|
           excute_knife_cmd(knife_command(item_class, item, action))

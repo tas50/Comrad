@@ -44,8 +44,8 @@ module Comrad
     pp Changeset.changes
 
     'Making Chef Changes'.marquee
-    Chef.process_changes(Changeset.changes)
+    Chef.process_changes
 
-    Notifier.notify(Changeset.changes)
+    Notifier.notify_changes
   end
 end
