@@ -67,14 +67,14 @@ module Comrad
     def self::create_change_hash(files_array)
       objects = empty_chef_object_hash
       files_array.each do |file|
+        split_file = file.split('/')
         case
         when file.match(/^[cookbook|roles|environments]/)
-          split_file = file.split('/')
+          # "cookbooks"=>{"some-cookbook"=>"update"}
           objects[split_file[0]][split_file[1]] = action(split_file[0..1].join('/'))
         when file.match(/^data_bags/)
-          split_file = file.split('/')
-          objects[split_file[0]][split_file[1]] = {} unless objects[split_file[0]].key?(split_file[1])
-          objects[split_file[0]][split_file[1]][split_file[2]] = action(split_file[0..2].join('/'))
+          # "data_bags"=>{"some_dbag/some_item.json"=>"update"}
+          objects[split_file[0]][split_file[1..2].join('/')] = action(split_file[0..2].join('/'))
         end
       end
       objects

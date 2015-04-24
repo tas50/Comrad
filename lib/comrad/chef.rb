@@ -25,17 +25,24 @@ module Comrad
       string + trailing_text
     end
 
-    # a really horrible method to build knife commands based on item / action / item type (cookbook/role/environment/data_bag)
-    def self::build_knife_cmd(type, action, item1, item2 = nil)
-      if type == 'data_bags'
-        action == 'delete' ? "knife data bag delete #{item1} #{item2}" : "knife data bag from file #{item1} data_bags/#{item1}/#{item2}"
-      elsif action == 'delete'
-        "knife #{type.chomp('s')} delete #{item1} #{item2}"
-      elsif type == 'cookbooks'
-        "knife cookbook #{action == 'update' ? 'upload' : 'delete'} #{item1}"
-      else
-        "knife #{type.chomp('s')} from file #{type}/#{item1}"
-      end
+    def self::knife_command(item_class, item, action)
+      item_class_singular = item_class.chomp('s')  # eg cookbooks > cookbook
+
+      item_path = {
+        cookbooks: item,
+        data_bags: "data_bags/#{item}",
+        environments: "environments/#{item}",
+        roles: "roles/#{item}"
+      }
+      item_path[:data_bags] = item.split('/').join(' ') if action == 'delete' # special case
+
+      knife_action = {
+        delete: 'delete',
+        update: 'from file'
+      }
+      knife_action[:update] = 'upload' if item_class == 'cookbooks' # special case
+
+      "knife #{item_class_singular} #{knife_action[action.to_sym]} #{item_path[item_class.to_sym]}"
     end
 
     # run the provided knife command
@@ -49,23 +56,10 @@ module Comrad
 
     # perform the appropriate knife action for each item in the +changeset+
     def self::process_changes(changeset)
-      changeset.each_pair do |type, name|
-        next if name.empty?
-        case
-        when type.match(/^['environments|roles']/)
-          name.each_pair do |item, action|
-            excute_knife_cmd(build_knife_cmd(type, action, item))
-          end
-        when type == 'cookbooks'
-          name.each_pair do |item, action|
-            excute_knife_cmd(build_knife_cmd(type, action, item))
-          end
-        when type == 'data_bags'
-          name.each_pair do |bag, item|
-            item.each_pair do |bag_item_name, action|
-              excute_knife_cmd(build_knife_cmd(type, action, bag, bag_item_name))
-            end
-          end
+      changeset.each_pair do |item_class, action_pairs|
+        next if action_pairs.empty?
+        action_pairs.each_pair do |item, action|
+          excute_knife_cmd(knife_command(item_class, item, action))
         end
       end
     end
