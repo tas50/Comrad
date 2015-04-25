@@ -7,8 +7,9 @@ Comrad prevents human error, by automatically syncing changes on the master bran
 
 ## Usage
 Comrad has several command line options and also a YAML config file.
-```
+
 Command line options:
+```
     -p, --print                      Print the config options that would be used, and then exit
     -c, --config comrad.yml          Path to config file (defaults to /etc/comrad.yml)
     -q, --quiet                      Don't post actions to Slack
