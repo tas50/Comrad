@@ -24,7 +24,7 @@ module Comrad
     def self::configure
       validate_config
       slack_config = {
-        webhook_url: Config.config['slack']['webhook_url'],
+        webhook_url: Config.config['slack']['webhook_url']
       }
       slack_config[:channel] = Config.config['slack']['channel'] if Config.config['slack']['channel']
       Slack::Post.configure(slack_config)
