@@ -42,7 +42,7 @@ module Comrad
     # fetch build data using Jenkins API
     def self::fetch_build_data
       j = Config.config['jenkins']
-      url = j['url'] + '/job/' + j['job_name'] + '/' + ENV['BUILD_NUMBER'] + '/api/json?'
+      url = j['url'] + '/job/' + j['job_name'] + '/' + Config.config['buildnum'] + '/api/json?'
       conn = RestClient::Resource.new(url, j['username'], j['password'])
       JSON.parse(conn.get)
     end

@@ -42,19 +42,17 @@ module Comrad
       end
     end
 
-    # make sure the BUILD_NUMBER Jenkins variable exists.  If not force help
-    def self::check_jenkins_env_variable
-      if ENV['BUILD_NUMBER'].nil?
-        puts "Jenkins set BUILD_NUMBER environmental variable not set. Cannot continue.\n\n"
-        ARGV[0] = '-h'
+    # make sure we have a build number
+    def self::validate_config(conf)
+      if conf['buildnum'].nil?
+        puts "Jenkins set BUILD_NUMBER environmental variable not set, and Comrad --buildnum CLI flag not used. Cannot continue without a build number.\n\n"
+        exit!
       end
     end
 
     # grabs the flags passed in via command line
     def self::parse_flags
-      check_jenkins_env_variable
-
-      flags = { config: '/etc/comrad.yml', print_config: false, quiet: false }
+      flags = { config: '/etc/comrad.yml', print_config: false, quiet: false, buildnum: ENV['BUILD_NUMBER'] }
       OptionParser.new do |opts|
         opts.banner = 'Usage: comrad [options]'
 
@@ -76,6 +74,10 @@ module Comrad
 
         opts.on('-s', '--scary-mode', "Enable the deletion of objects if they've been removed from git") do |scary|
           flags[:scary] = scary
+        end
+
+        opts.on('-b', '--build-num 123', 'Run comrad against a particular Jenkins build for testing') do |build|
+          flags[:buildnum] = build
         end
 
         opts.on('-h', '--help', 'Displays Help') do
@@ -108,6 +110,10 @@ module Comrad
       config = file_config.dup
       config['flags'] = {}
       flags_config.each { |k, v| config['flags'][k.to_s] = v }
+
+      # massage in either the buildnum CLI flag or the Jenkins provided ENV variable
+      config['buildnum'] = config['flags']['buildnum']
+      validate_config(config)
       config
     end
   end
