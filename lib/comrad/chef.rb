@@ -43,7 +43,7 @@ module Comrad
     end
 
     # run the provided knife command
-    def self::excute_knife_cmd(cmd)
+    def self::execute_knife_cmd(cmd)
       # dry mode will just show what we would do
       if Config.config['flags']['dryrun']
         puts "I would be running '#{cmd}'"
@@ -60,7 +60,7 @@ module Comrad
       Changeset.changes.each_pair do |item_class, action_pairs|
         next if action_pairs.empty?
         action_pairs.each_pair do |item, action|
-          excute_knife_cmd(knife_command(item_class, item, action))
+          execute_knife_cmd(knife_command(item_class, item, action))
         end
       end
     end
