@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'chef', '>= 11.0'
   s.add_dependency 'slack-post', '~> 0.3', '>= 0.3.1'
   s.add_development_dependency 'rake', '~> 10.0'
-  s.add_development_dependency 'rubocop', '~> 0.32.0'
+  s.add_development_dependency 'rubocop', '~> 0.33.0'
 
   s.files         = `git ls-files -z`.split("\x0")
   s.executables   = s.name
