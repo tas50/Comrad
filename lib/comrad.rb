@@ -15,8 +15,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require 'pp'
-
 require 'core_ext/string'
 
 require 'comrad/config'
@@ -44,7 +42,7 @@ module Comrad
     end
 
     'The following chef objects will be changed'.marquee
-    pp Changeset.changes
+    puts Changeset.changes.to_yaml.gsub("---\n", '')
 
     'Making Chef Changes'.marquee
     Chef.process_changes
