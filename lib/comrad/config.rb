@@ -45,7 +45,7 @@ module Comrad
     # make sure we have a build number
     def self::validate_config(conf)
       if conf['buildnum'].nil?
-        puts "Jenkins set BUILD_NUMBER environmental variable not set, and Comrad --buildnum CLI flag not used. Cannot continue without a build number.\n\n"
+        puts "Jenkins set BUILD_NUMBER environmental variable not set, and Comrad --build-num CLI flag not used. Cannot continue without a build number.\n\n"
         exit!
       end
     end
