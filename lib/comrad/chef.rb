@@ -44,10 +44,14 @@ module Comrad
 
     # run the provided knife command
     def self::excute_knife_cmd(cmd)
+      # dry mode will just show what we would do
       if Config.config['flags']['dryrun']
         puts "I would be running '#{cmd}'"
-      else
-        puts "Live mode is not implemented. Not performing '#{cmd}'"
+      # are we in scary mode or not running a delete command
+      elsif Config.config['flags']['scary'] || !cmd.include?('delete')
+        puts "Shelling out not yet implemented so not running #{cmd}"
+      else # we're trying to delete something w/o scary mode enabled
+        puts "#{cmd} skipped. Enable scary-mode to allow deletes."
       end
     end
 
