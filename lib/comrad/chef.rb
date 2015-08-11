@@ -42,14 +42,26 @@ module Comrad
       ]
     end
 
-    # run the provided knife command
+    # handle the actual shell out
+    def self::shell_out(cmd)
+      require 'open3'
+      puts "Running #{cmd}..."
+      Open3.popen3(cmd) do |_stdin, _stdout, stderr, thread|
+        unless thread.value.success?
+          puts 'Failed to run the knife command with the following error:'.to_red
+          puts stderr.read
+        end
+      end
+    end
+
+    # determine if we should shell out or print and then do it
     def self::execute_knife_cmd(cmd)
       # dry mode will just show what we would do
       if Config.config['flags']['dryrun']
         puts "I would be running '#{cmd}'"
       # are we in scary mode or not running a delete command
       elsif Config.config['flags']['scary'] || !cmd.include?('delete')
-        puts "Shelling out not yet implemented so not running #{cmd}"
+        shell_out(cmd)
       else # we're trying to delete something w/o scary mode enabled
         puts "#{cmd} skipped. Enable scary-mode to allow deletes."
       end
