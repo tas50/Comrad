@@ -23,7 +23,7 @@ Example YAML config:
   ---
 slack:
   webhook_url: 'https://hooks.slack.com/services/123/123/123
-  channel: 'ops-channel'
+  channel: '#ops-channel'
 jenkins:
   workspace_dir: '/var/jenkins/workspaces/myjob/'
   url: 'http://jenkins.int.myco.co/'
