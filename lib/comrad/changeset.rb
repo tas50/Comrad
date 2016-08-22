@@ -75,11 +75,10 @@ module Comrad
       objects = empty_chef_object_hash
       files_array.each do |file|
         split_file = file.split('/')
-        case
-        when /^(cookbook|roles|environments)/.match(file)
+        if /^(cookbook|roles|environments)/ =~ file
           # "cookbooks"=>{"some-cookbook"=>"update"}
           objects[split_file[0]][split_file[1]] = action(split_file[0..1].join('/'))
-        when /^data_bags/.match(file)
+        elsif /^data_bags/ =~ file
           # "data_bags"=>{"some_dbag/some_item.json"=>"update"}
           objects[split_file[0]][split_file[1..2].join('/')] = action(split_file[0..2].join('/'))
         end

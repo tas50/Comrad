@@ -38,8 +38,10 @@ module Comrad
         Slack::Post.post_with_attachments(
           'Comrad action for chef repo <%s|Build #%s>' % [ # rubocop:disable FormatString
             Changeset.build_data['url'],
-            Changeset.build_data['number']],
-          changeset_attachment)
+            Changeset.build_data['number']
+          ],
+          changeset_attachment
+        )
       end
     end
 

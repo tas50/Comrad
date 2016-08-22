@@ -7,16 +7,16 @@ Gem::Specification.new do |s|
   s.summary     = 'Your rad comrade - Sync changes from git to Chef Server via Jenkins'
   s.description = s.summary
   s.authors     = ['Tim Smith']
-  s.email       = 'tim@cozy.co'
+  s.email       = 'tsmith@chef.io'
   s.homepage    = 'http://www.github.com/tas50/Comrad'
   s.license     = 'Apache-2.0'
 
-  s.required_ruby_version = '>= 1.9.3'
-  s.add_dependency 'rest-client', '~> 1.7.0'
+  s.required_ruby_version = '>= 2.1.0'
+  s.add_dependency 'rest-client', '~> 2.0'
   s.add_dependency 'chef', '>= 11.0'
   s.add_dependency 'slack-post', '~> 0.3', '>= 0.3.2'
-  s.add_development_dependency 'rake', '~> 10.0'
-  s.add_development_dependency 'rubocop', '~> 0.33.0'
+  s.add_development_dependency 'rake', '~> 11.0'
+  s.add_development_dependency 'rubocop', '~> 0.42.0'
 
   s.files         = `git ls-files -z`.split("\x0")
   s.executables   = s.name
